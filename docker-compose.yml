@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  debianxrdp:
+    container_name: debianxrdp
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: debianxrdp-pro:latest
+
+    hostname: debianxrdp
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      TZ: ${TZ}
+      USERNAME: ${USERNAME}
+      PASSWORD: ${PASSWORD}
+      LANG: ${LANG}
+      LANGUAGE: ${LANGUAGE}
+      LC_ALL: ${LC_ALL}
+      DISPLAY_WIDTH: ${DISPLAY_WIDTH}
+      DISPLAY_HEIGHT: ${DISPLAY_HEIGHT}
+      DISPLAY_DEPTH: ${DISPLAY_DEPTH}
+      XRDP_PORT: ${XRDP_PORT}
+      ALLOW_ROOT_LOGIN: ${ALLOW_ROOT_LOGIN}
+      LOG_LEVEL: ${LOG_LEVEL}
+
+    ports:
+      - "${XRDP_PORT}:3389"
+
+    volumes:
+      - user_home:/home
+      - logs:/var/log/debianxrdp
+
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+    security_opt:
+      - no-new-privileges:true
+
+    shm_size: "2gb"
+
+    tty: true
+
+    stdin_open: true
+
+volumes:
+  user_home:
+
+  logs:
