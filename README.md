@@ -1,3 +1,0 @@
-# DebianXRDP-Pro
-
-Foundation release.
